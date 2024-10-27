@@ -1,0 +1,1 @@
+This sample demonstrates how developers can use content scripts which employ Document Object Models to read and change the content of a page. In this instance, the extension checks to find a job post and renders it differently if it is not interesting.

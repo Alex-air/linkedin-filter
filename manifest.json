@@ -1,0 +1,18 @@
+{
+    "manifest_version": 3,
+    "name": "Filter LinkedIn",
+    "version": "1.0",
+    "description": "Filters the job posts that are not useful to your job criteria",
+  
+    "icons": {
+      "128": "images/icon-128.png"
+    },
+    "content_scripts": [
+      {
+        "js": ["scripts/content.js"],
+        "matches": [
+          "https://www.linkedin.com/jobs/*"
+        ]
+      }
+    ]
+  }
