@@ -1,12 +1,15 @@
-// Function to apply transparency based on criteria
+// Function to apply transparency to all job items except the selected one
 function applyTransparencyToJobs() {
-    const jobItems = document.querySelectorAll('div[data-job-id]');
+    const jobItems = document.querySelectorAll('div[data-job-id]:not(.jobs-search-results-list__list-item--active)');
     
     jobItems.forEach(jobItem => {
-        if (meetsCriteria(jobItem))
-            jobItem.style.opacity = '1';
-        else
-            jobItem.style.opacity = '0.25';
+        // TODO: Add a counter to show the saved jobs, and the total ones
+        if (!meetsCriteria(jobItem))
+        {
+            jobItem.style.height = '0px';
+            jobItem.style.visibility = 'hidden';
+        }
+            //jobItem.style.opacity = '0.25';
     });
 }
 
@@ -14,14 +17,23 @@ function applyTransparencyToJobs() {
 function meetsCriteria(jobItem) {
     const content = jobItem.textContent || ""; // Get text content of the job item
 
-    // Criteria: True if meets the following:
-    // - Contains "Barcelona" but does NOT contain "viewed" or "applied"
-    // - OR contains "Remote" but does NOT contain "viewed" or "applied"
-    const containsBarcelona = content.includes("Barcelona");
-    const containsRemote = content.includes("Remote");
-    const containsViewedOrApplied = content.includes("Viewed") || content.includes("Applied");
+    const whitelist =   content.includes("Barcelona") ||
+                        content.includes("Catalonia") ||
+                        content.includes("Remote");
+    const blacklist =   content.includes("Viewed") || 
+                        content.includes("Applied") || 
+                        content.includes("Saved") || 
+                        content.includes("Agoda") || 
+                        content.includes("myGwork") || 
+                        content.includes("Crossover") || 
+                        content.includes("Canonical") || 
+                        content.includes("RISK") || 
+                        content.includes("Revolut") || 
+                        content.includes("Growth") || 
+                        content.includes("Playrix") || 
+                        content.includes("Semrush");
     
-    return (containsBarcelona || containsRemote) && !containsViewedOrApplied;
+    return whitelist && !blacklist;
 }
 
 // Observe changes in the DOM and apply the transparency
