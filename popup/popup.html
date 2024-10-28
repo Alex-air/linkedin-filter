@@ -8,18 +8,28 @@
         body { font-family: Arial, sans-serif; padding: 10px; width: 200px; }
         label { font-weight: bold; margin-top: 5px; display: block; }
         textarea { width: 100%; height: 60px; margin-bottom: 10px; }
-        button { width: 100%; padding: 5px; }
+        button { width: 100%; margin-top: 10px; padding: 5px; }
     </style>
 </head>
 <body>
-    <h3>Filter Criteria</h3>
-    <label for="whitelist">Whitelist (comma-separated):</label>
-    <textarea id="whitelist"></textarea>
+    <h3>Job Filter Settings</h3>
+    
+    <!-- Whitelist and Blacklist Input Fields -->
+    <label>Whitelist (comma-separated):</label>
+    <textarea id="whitelist" placeholder="Enter whitelist terms"></textarea>
+    
+    <label>Blacklist (comma-separated):</label>
+    <textarea id="blacklist" placeholder="Enter blacklist terms"></textarea>
 
-    <label for="blacklist">Blacklist (comma-separated):</label>
-    <textarea id="blacklist"></textarea>
+    <!-- Radio Buttons for Effect Selection -->
+    <fieldset>
+        <legend>Filter effect:</legend>
+        <label><input type="radio" name="effect" value="transparent" checked> Transparent</label>
+        <label><input type="radio" name="effect" value="hide"> Hide</label>
+    </fieldset>
+    
+    <button id="saveButton">Save and Apply</button>
 
-    <button id="save">Save</button>
+    <script src="popup.js"></script>
 </body>
-<script src="popup.js"></script>
 </html>

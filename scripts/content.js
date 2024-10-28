@@ -2,21 +2,33 @@
 //const blacklist = ["Viewed", "Applied", "Saved", "Agoda", "myGwork", "Crossover", "Canonical", "RISK", "Revolut", "Growth", "Playrix", "Semrush"];    // Add any other terms to blacklist
 
 // Function to apply transparency to all job items except the selected one
-function applyEffectToJobs(whitelist, blacklist) {
+function applyEffectToJobs(whitelist, blacklist, effect) {
     const jobItems = document.querySelectorAll('div[data-job-id]:not(.jobs-search-results-list__list-item--active)');
 
     jobItems.forEach(jobItem => {
         // TODO: Add a counter to show the saved jobs, and the total ones
 
         if (!meetsCriteria(jobItem, whitelist, blacklist))
-            jobItem.style.opacity = '0.25';
-        else
-            jobItem.style.opacity = '1';
-        /*
         {
-            jobItem.style.height = '0px';
-            jobItem.style.visibility = 'hidden';
-        }*/
+            if (effect === 'transparent')
+            {
+                jobItem.style.opacity = '0.25';
+                jobItem.style.height = ""; // Reset height to original
+                jobItem.style.overflow = ""; // Reset overflow to original
+            }
+            else
+            {
+                jobItem.style.opacity = '0';
+                jobItem.style.height = "0"; // Collapse height
+                jobItem.style.overflow = "hidden"; // Hide any overflow content
+            }
+        }
+        else
+        {
+                jobItem.style.opacity = '1'; // Restore the opacity
+                jobItem.style.height = ""; // Reset height to original
+                jobItem.style.overflow = ""; // Reset overflow to original
+        }
     });
 }
 
@@ -35,19 +47,20 @@ function meetsCriteria(jobItem, whitelist, blacklist) {
 
 // Load whitelist and blacklist from Chrome storage, then apply effect
 function applyJobFilter() {
-    chrome.storage.sync.get(['whitelist', 'blacklist'], (data) => {
+    chrome.storage.sync.get(['whitelist', 'blacklist', 'effect'], (data) => {
         const whitelist = data.whitelist || [];
         const blacklist = data.blacklist || [];
+        const effect = data.effect || "transparent"; // Default to "transparent" if not set
 
         // Observe changes in the DOM and apply the transparency
-        const observer = new MutationObserver(() => applyEffectToJobs(whitelist, blacklist));
+        const observer = new MutationObserver(() => applyEffectToJobs(whitelist, blacklist, effect));
         observer.observe(document.body, {
             childList: true,
             subtree: true
         });
 
         // Initial call in case job items are already loaded
-        applyEffectToJobs(whitelist, blacklist);
+        applyEffectToJobs(whitelist, blacklist, effect);
     });
 }
 
