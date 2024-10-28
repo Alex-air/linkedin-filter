@@ -3,9 +3,15 @@
     "name": "Filter LinkedIn",
     "version": "1.0",
     "description": "Filters the job posts that are not useful to your job criteria",
-  
+    "permissions": ["storage"],
     "icons": {
       "128": "images/icon-128.png"
+    },
+    "action": {
+        "default_popup": "popup/popup.html"
+    },
+    "background": {
+        "service_worker": "scripts/background.js"
     },
     "content_scripts": [
       {

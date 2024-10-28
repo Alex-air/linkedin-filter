@@ -1,49 +1,62 @@
+//const whitelist = ["Barcelona", "Catalonia", "Remote"];  // Add any other terms to whitelist
+//const blacklist = ["Viewed", "Applied", "Saved", "Agoda", "myGwork", "Crossover", "Canonical", "RISK", "Revolut", "Growth", "Playrix", "Semrush"];    // Add any other terms to blacklist
+
 // Function to apply transparency to all job items except the selected one
-function applyTransparencyToJobs() {
+function applyEffectToJobs(whitelist, blacklist) {
     const jobItems = document.querySelectorAll('div[data-job-id]:not(.jobs-search-results-list__list-item--active)');
-    
+
     jobItems.forEach(jobItem => {
         // TODO: Add a counter to show the saved jobs, and the total ones
-        if (!meetsCriteria(jobItem))
+
+        if (!meetsCriteria(jobItem, whitelist, blacklist))
+            jobItem.style.opacity = '0.25';
+        else
+            jobItem.style.opacity = '1';
+        /*
         {
             jobItem.style.height = '0px';
             jobItem.style.visibility = 'hidden';
-        }
-            //jobItem.style.opacity = '0.25';
+        }*/
     });
 }
 
 // Define your criteria function (modify as needed)
-function meetsCriteria(jobItem) {
-    const content = jobItem.textContent || ""; // Get text content of the job item
+function meetsCriteria(jobItem, whitelist, blacklist) {
+    const content = jobItem.textContent || "";
 
-    const whitelist =   content.includes("Barcelona") ||
-                        content.includes("Catalonia") ||
-                        content.includes("Remote");
-    const blacklist =   content.includes("Viewed") || 
-                        content.includes("Applied") || 
-                        content.includes("Saved") || 
-                        content.includes("Agoda") || 
-                        content.includes("myGwork") || 
-                        content.includes("Crossover") || 
-                        content.includes("Canonical") || 
-                        content.includes("RISK") || 
-                        content.includes("Revolut") || 
-                        content.includes("Growth") || 
-                        content.includes("Playrix") || 
-                        content.includes("Semrush");
+    // Check if any whitelisted term is present
+    const isWhitelisted = whitelist.some(term => content.includes(term));
     
-    return whitelist && !blacklist;
+    // Check if any blacklisted term is present
+    const isBlacklisted = blacklist.some(term => content.includes(term));
+
+    return isWhitelisted && !isBlacklisted;
 }
 
-// Observe changes in the DOM and apply the transparency
-const observer = new MutationObserver(applyTransparencyToJobs);
+// Load whitelist and blacklist from Chrome storage, then apply effect
+function applyJobFilter() {
+    chrome.storage.sync.get(['whitelist', 'blacklist'], (data) => {
+        const whitelist = data.whitelist || [];
+        const blacklist = data.blacklist || [];
 
-// Start observing the body for child changes (adjust as needed)
-observer.observe(document.body, {
-    childList: true,
-    subtree: true
+        // Observe changes in the DOM and apply the transparency
+        const observer = new MutationObserver(() => applyEffectToJobs(whitelist, blacklist));
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        // Initial call in case job items are already loaded
+        applyEffectToJobs(whitelist, blacklist);
+    });
+}
+
+// Listen for messages from popup.js to apply the filter
+chrome.runtime.onMessage.addListener((request) => {
+    if (request.action === "applyFilter") {
+        applyJobFilter();
+    }
 });
 
-// Initial call in case job items are already loaded
-applyTransparencyToJobs();
+// Apply the filter on initial load
+applyJobFilter();
