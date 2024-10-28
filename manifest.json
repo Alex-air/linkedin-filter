@@ -3,7 +3,8 @@
     "name": "Filter LinkedIn",
     "version": "1.0",
     "description": "Filters the job posts that are not useful to your job criteria",
-    "permissions": ["storage"],
+    "permissions": ["storage", "activeTab", "scripting"],
+    "host_permissions": ["https://www.linkedin.com/*"],
     "icons": {
       "128": "images/icon-128.png"
     },
