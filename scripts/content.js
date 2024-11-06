@@ -47,20 +47,24 @@ function meetsCriteria(jobItem, whitelist, blacklist) {
 
 // Load whitelist and blacklist from Chrome storage, then apply effect
 function applyJobFilter() {
-    chrome.storage.sync.get(['whitelist', 'blacklist', 'effect'], (data) => {
+    chrome.storage.sync.get(['whitelist', 'blacklist', 'effect', 'quickFilters'], (data) => {
         const whitelist = data.whitelist || [];
         const blacklist = data.blacklist || [];
+        const quickFilters = data.quickFilters || [];
         const effect = data.effect || "transparent"; // Default to "transparent" if not set
 
+        // Combine blacklist and quickFilters for filtering
+        const combinedBlacklist = [...new Set([...blacklist, ...quickFilters])];
+
         // Observe changes in the DOM and apply the transparency
-        const observer = new MutationObserver(() => applyEffectToJobs(whitelist, blacklist, effect));
+        const observer = new MutationObserver(() => applyEffectToJobs(whitelist, combinedBlacklist, effect));
         observer.observe(document.body, {
             childList: true,
             subtree: true
         });
 
         // Initial call in case job items are already loaded
-        applyEffectToJobs(whitelist, blacklist, effect);
+        applyEffectToJobs(whitelist, combinedBlacklist, effect);
     });
 }
 

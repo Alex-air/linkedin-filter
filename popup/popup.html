@@ -20,6 +20,15 @@
     
     <label>Blacklist (comma-separated):</label>
     <textarea id="blacklist" placeholder="Enter blacklist terms"></textarea>
+    
+    <!-- Checkboxes for Quick Filters -->
+    <fieldset>
+        <legend>Quick Filters:</legend>
+        <label><input type="checkbox" id="appliedFilter" value="Applied"> Applied</label><br>
+        <label><input type="checkbox" id="viewedFilter" value="Viewed"> Viewed</label><br>
+        <label><input type="checkbox" id="savedFilter" value="Saved"> Saved</label><br>
+        <label><input type="checkbox" id="promotedFilter" value="Promoted"> Promoted</label>
+    </fieldset>
 
     <!-- Radio Buttons for Effect Selection -->
     <fieldset>
@@ -27,7 +36,7 @@
         <label><input type="radio" name="effect" value="transparent" checked> Transparent</label>
         <label><input type="radio" name="effect" value="hide"> Hide</label>
     </fieldset>
-    
+
     <button id="saveButton">Save and Apply</button>
 
     <script src="popup.js"></script>
