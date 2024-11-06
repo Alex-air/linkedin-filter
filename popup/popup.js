@@ -26,7 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
         chrome.storage.sync.set({ whitelist, blacklist, effect }, () => {
             // Send message to the active tab to apply filter
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            // Check if we are in a LinkedIn page. Not checking it raises an error
+            const url = tabs[0].url || "";
+            if (url.includes("https://www.linkedin.com/jobs/")) 
                 chrome.tabs.sendMessage(tabs[0].id, { action: "applyFilter" });
+            else
+                console.log("Not on a LinkedIn job page. No message sent to content script.");
             });
         });
     });
