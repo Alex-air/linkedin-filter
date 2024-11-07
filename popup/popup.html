@@ -4,12 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Job Filter Settings</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 10px; width: 200px; }
-        label { font-weight: bold; margin-top: 5px; display: block; }
-        textarea { width: 100%; height: 60px; margin-bottom: 10px; }
-        button { width: 100%; margin-top: 10px; padding: 5px; }
-    </style>
+    <link rel="stylesheet" href="popup.css">
 </head>
 <body>
     <h1>Job Filter Settings</h1>
@@ -30,29 +25,32 @@
     <label>Blacklisted companies:</label>
     <textarea id="blacklistCompanies" placeholder="Enter blacklisted companies"></textarea>
 
-    <!-- Checkboxes for Quick Filters -->
-    <fieldset>
-        <legend>Quick Filters:</legend>
-        <label><input type="checkbox" id="appliedFilter" value="Applied"> Applied</label><br>
-        <label><input type="checkbox" id="viewedFilter" value="Viewed"> Viewed</label><br>
-        <label><input type="checkbox" id="savedFilter" value="Saved"> Saved</label><br>
-        <label><input type="checkbox" id="promotedFilter" value="Promoted"> Promoted</label>
-    </fieldset>
-    
-    <!-- Radio Buttons for Effect Selection -->
-    <fieldset>
-        <legend>Filter effect:</legend>
-        <label><input type="radio" name="effect" value="transparent" checked> Transparent</label>
-        <label><input type="radio" name="effect" value="hide"> Hide</label>
-    </fieldset>
+    <!-- Fieldsets in a 3-Column Layout -->
+    <div class="fieldset-container">
+        <!-- Checkboxes for Quick Filters -->
+        <fieldset>
+            <legend>Quick Filters:</legend>
+            <label><input type="checkbox" id="appliedFilter" value="Applied"> Applied</label><br>
+            <label><input type="checkbox" id="viewedFilter" value="Viewed"> Viewed</label><br>
+            <label><input type="checkbox" id="savedFilter" value="Saved"> Saved</label><br>
+            <label><input type="checkbox" id="promotedFilter" value="Promoted"> Promoted</label>
+        </fieldset>
+        
+        <!-- Radio Buttons for Effect Selection -->
+        <fieldset>
+            <legend>Filter effect:</legend>
+            <label><input type="radio" name="effect" value="transparent" checked> Transparent</label>
+            <label><input type="radio" name="effect" value="hide"> Hide</label>
+        </fieldset>
 
-    <!-- Highlighting Section -->
-    <fieldset>
-        <legend>Highlight Jobs:</legend>
-        <label><input type="checkbox" id="earlyApplicantHighlight" value="EarlyApplicant"> Early Applicant</label><br>
-        <label><input type="checkbox" id="hasConnectionsHighlight" value="HasConnections"> Has Connections</label><br>
-        <label><input type="checkbox" id="earlyReviewTimeHighlight" value="EarlyReviewTime"> Early Review Time</label>
-    </fieldset>
+        <!-- Highlighting Section -->
+        <fieldset>
+            <legend>Highlight Jobs:</legend>
+            <label><input type="checkbox" id="earlyApplicantHighlight" value="EarlyApplicant"> Early Applicant</label><br>
+            <label><input type="checkbox" id="hasConnectionsHighlight" value="HasConnections"> Has Connections</label><br>
+            <label><input type="checkbox" id="earlyReviewTimeHighlight" value="EarlyReviewTime"> Early Review Time</label>
+        </fieldset>
+    </div>
     
     <button id="saveButton">Save and Apply</button>
 
