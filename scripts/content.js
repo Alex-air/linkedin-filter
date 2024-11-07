@@ -1,12 +1,14 @@
 // Function to apply transparency to all job items except the selected one
-function applyEffectToJobs(whitelist, blacklist, effect) {
+function applyEffectToJobs(enabled, whitelist, blacklist, effect) {
     const jobItems = document.querySelectorAll('div[data-job-id]:not(.jobs-search-results-list__list-item--active)');
 
     jobItems.forEach(jobItem => {
         // TODO: Add a counter to show the saved jobs, and the total ones
         // It is better not to do it, since LinkedIn renders many more out of the visible area.
         // The number could be misleading
-        if (!meetsCriteria(jobItem, whitelist, blacklist))
+
+        // If the extension is not enabled, just print as default
+        if (enabled && !meetsCriteria(jobItem, whitelist, blacklist))
         {
             if (effect === 'transparent')
             {
@@ -45,7 +47,9 @@ function meetsCriteria(jobItem, whitelist, blacklist) {
 
 // Load whitelist and blacklist from Chrome storage, then apply effect
 function applyJobFilter() {
-    chrome.storage.sync.get(['whitelist', 'blacklistKeywords', 'blacklistCompanies', 'effect', 'quickFilters'], (data) => {
+    chrome.storage.sync.get(['enabled', 'whitelist', 'blacklistKeywords', 'blacklistCompanies', 'effect', 'quickFilters'], (data) => {
+
+        const enabled = data.enabled !== false;
         const whitelist = data.whitelist || [];
         const blacklistKeywords = data.blacklistKeywords || [];
         const blacklistCompanies = data.blacklistCompanies || [];
@@ -56,14 +60,14 @@ function applyJobFilter() {
         const combinedBlacklist = [...new Set([...blacklistKeywords, ...blacklistCompanies, ...quickFilters])];
 
         // Observe changes in the DOM and apply the transparency
-        const observer = new MutationObserver(() => applyEffectToJobs(whitelist, combinedBlacklist, effect));
+        const observer = new MutationObserver(() => applyEffectToJobs(enabled, whitelist, combinedBlacklist, effect));
         observer.observe(document.body, {
             childList: true,
             subtree: true
         });
 
         // Initial call in case job items are already loaded
-        applyEffectToJobs(whitelist, combinedBlacklist, effect);
+        applyEffectToJobs(enabled, whitelist, combinedBlacklist, effect);
     });
 }
 

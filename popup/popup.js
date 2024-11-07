@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const extensionEnabledCheck = document.getElementById('extensionEnabled');
     const whitelistInput = document.getElementById('whitelist');
     const blacklistKeywordsInput = document.getElementById('blacklistKeywords');
     const blacklistCompaniesInput = document.getElementById('blacklistCompanies');
@@ -9,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const promotedFilter = document.getElementById("promotedFilter");
 
     // Load saved whitelist and blacklist from storage
-    chrome.storage.sync.get(["whitelist", "blacklistKeywords", "blacklistCompanies", "effect", "quickFilters"], (data) => {
+    chrome.storage.sync.get(["enabled", "whitelist", "blacklistKeywords", "blacklistCompanies", "effect", "quickFilters"], (data) => {
+        extensionEnabledCheck.checked = data.enabled !== false; // Default to enabled if not set
         whitelistInput.value = data.whitelist ? data.whitelist.join(", ") : "";
         blacklistKeywordsInput.value = data.blacklistKeywords ? data.blacklistKeywords.join(", ") : "";
         blacklistCompaniesInput.value = data.blacklistCompanies ? data.blacklistCompanies.join(", ") : "";
@@ -28,10 +30,21 @@ document.addEventListener('DOMContentLoaded', () => {
             // If no value is saved, default to "transparent"
             document.querySelector(`input[name="effect"][value="transparent"]`).checked = true;
         }
+
+        // Disable or enable UI controls based on the enabled state
+        toggleControls(extensionEnabledCheck.checked);
     });
 
+    // Function to enable or disable controls based on extension state
+    function toggleControls(enabled) {
+        const controls = document.querySelectorAll(
+            "#whitelist, #blacklistKeywords, #blacklistCompanies, input[name='effect'], #appliedFilter, #viewedFilter, #savedFilter, #promotedFilter"
+        );
+        controls.forEach(control => control.disabled = !enabled);
+    }
     // Save and apply the whitelist and blacklist when the save button is clicked
     saveButton.addEventListener('click', () => {
+        const enabled = extensionEnabledCheck.checked;
         const whitelist = whitelistInput.value.split(",").map(item => item.trim());
         const blacklistKeywords = blacklistKeywordsInput.value.split(",").map(item => item.trim());
         const blacklistCompanies  = blacklistCompaniesInput.value.split(",").map(item => item.trim());
@@ -44,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedFilter.checked) quickFilters.push("Saved");
         if (promotedFilter.checked) quickFilters.push("Promoted");
 
-        chrome.storage.sync.set({ whitelist, blacklistKeywords, blacklistCompanies, effect, quickFilters }, () => {
+        chrome.storage.sync.set({ enabled, whitelist, blacklistKeywords, blacklistCompanies, effect, quickFilters }, () => {
             // Send message to the active tab to apply filter
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
@@ -56,5 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("Not on a LinkedIn job page. No message sent to content script.");
             });
         });
+    });
+
+    // Enable/disable toggle
+    extensionEnabledCheck.addEventListener("change", (event) => {
+        const enabled = event.target.checked;
+        toggleControls(enabled);
     });
 });
