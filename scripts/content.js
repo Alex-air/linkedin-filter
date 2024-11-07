@@ -13,7 +13,8 @@ function applyEffectToJobs(enabled, whitelist, blacklist, effect, highlightCrite
             jobItem.style.opacity = '1'; // Restore the opacity
             jobItem.style.height = ""; // Reset height to original
             jobItem.style.overflow = ""; // Reset overflow to original
-
+            jobItem.style.backgroundColor = "";
+            
             return;
         }
 
