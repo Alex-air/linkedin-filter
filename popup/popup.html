@@ -19,7 +19,7 @@
         <input type="checkbox" id="extensionEnabled">
         Enable Extension
     </label>
-    
+
     <!-- Whitelist and Blacklist Input Fields -->
     <label>Whitelisted keywords (comma-separated, case-sensitive):</label>
     <textarea id="whitelist" placeholder="Enter whitelist terms"></textarea>
@@ -38,7 +38,7 @@
         <label><input type="checkbox" id="savedFilter" value="Saved"> Saved</label><br>
         <label><input type="checkbox" id="promotedFilter" value="Promoted"> Promoted</label>
     </fieldset>
-
+    
     <!-- Radio Buttons for Effect Selection -->
     <fieldset>
         <legend>Filter effect:</legend>
@@ -46,6 +46,14 @@
         <label><input type="radio" name="effect" value="hide"> Hide</label>
     </fieldset>
 
+    <!-- Highlighting Section -->
+    <fieldset>
+        <legend>Highlight Jobs:</legend>
+        <label><input type="checkbox" id="earlyApplicantHighlight" value="EarlyApplicant"> Early Applicant</label><br>
+        <label><input type="checkbox" id="hasConnectionsHighlight" value="HasConnections"> Has Connections</label><br>
+        <label><input type="checkbox" id="earlyReviewTimeHighlight" value="EarlyReviewTime"> Early Review Time</label>
+    </fieldset>
+    
     <button id="saveButton">Save and Apply</button>
 
     <script src="popup.js"></script>

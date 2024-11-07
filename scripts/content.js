@@ -1,5 +1,5 @@
 // Function to apply transparency to all job items except the selected one
-function applyEffectToJobs(enabled, whitelist, blacklist, effect) {
+function applyEffectToJobs(enabled, whitelist, blacklist, effect, highlightCriteria) {
     const jobItems = document.querySelectorAll('div[data-job-id]:not(.jobs-search-results-list__list-item--active)');
 
     jobItems.forEach(jobItem => {
@@ -8,7 +8,16 @@ function applyEffectToJobs(enabled, whitelist, blacklist, effect) {
         // The number could be misleading
 
         // If the extension is not enabled, just print as default
-        if (enabled && !meetsCriteria(jobItem, whitelist, blacklist))
+        if (!enabled)
+        {
+            jobItem.style.opacity = '1'; // Restore the opacity
+            jobItem.style.height = ""; // Reset height to original
+            jobItem.style.overflow = ""; // Reset overflow to original
+
+            return;
+        }
+
+        if (!meetsCriteria(jobItem, whitelist, blacklist))
         {
             if (effect === 'transparent')
             {
@@ -23,12 +32,9 @@ function applyEffectToJobs(enabled, whitelist, blacklist, effect) {
                 jobItem.style.overflow = "hidden"; // Hide any overflow content
             }
         }
-        else
-        {
-                jobItem.style.opacity = '1'; // Restore the opacity
-                jobItem.style.height = ""; // Reset height to original
-                jobItem.style.overflow = ""; // Reset overflow to original
-        }
+
+        // Apply highlighting if criteria are met
+        jobItem.style.backgroundColor = shouldHighlight(jobItem, highlightCriteria) ? "rgba(255, 255, 0, 0.2)" : "";
     });
 }
 
@@ -45,29 +51,41 @@ function meetsCriteria(jobItem, whitelist, blacklist) {
     return isWhitelisted && !isBlacklisted;
 }
 
+// Just search for the content in the job items
+function shouldHighlight(jobItem, highlightCriteria)
+{
+    const content = jobItem.textContent || "";
+    return (
+        (highlightCriteria.includes("EarlyApplicant") && /be an early applicant|hour ago|hours ago|h ago|minute ago|minutes ago|day ago/i.test(content)) ||
+        (highlightCriteria.includes("HasConnections") && /connection works here|connections work here|school alum|school alumni/i.test(content)) ||
+        (highlightCriteria.includes("EarlyReviewTime") && /applicant review time/i.test(content))
+    );
+}
+
 // Load whitelist and blacklist from Chrome storage, then apply effect
 function applyJobFilter() {
-    chrome.storage.sync.get(['enabled', 'whitelist', 'blacklistKeywords', 'blacklistCompanies', 'effect', 'quickFilters'], (data) => {
+    chrome.storage.sync.get(['enabled', 'whitelist', 'blacklistKeywords', 'blacklistCompanies', 'effect', 'quickFilters', 'highlightCriteria'], (data) => {
 
         const enabled = data.enabled !== false;
         const whitelist = data.whitelist || [];
         const blacklistKeywords = data.blacklistKeywords || [];
         const blacklistCompanies = data.blacklistCompanies || [];
         const quickFilters = data.quickFilters || [];
+        const highlightCriteria = data.highlightCriteria || [];
         const effect = data.effect || "transparent"; // Default to "transparent" if not set
 
         // Combine blacklistKeywords, blacklistCompanies and quickFilters for filtering
         const combinedBlacklist = [...new Set([...blacklistKeywords, ...blacklistCompanies, ...quickFilters])];
 
         // Observe changes in the DOM and apply the transparency
-        const observer = new MutationObserver(() => applyEffectToJobs(enabled, whitelist, combinedBlacklist, effect));
+        const observer = new MutationObserver(() => applyEffectToJobs(enabled, whitelist, combinedBlacklist, effect, highlightCriteria));
         observer.observe(document.body, {
             childList: true,
             subtree: true
         });
 
         // Initial call in case job items are already loaded
-        applyEffectToJobs(enabled, whitelist, combinedBlacklist, effect);
+        applyEffectToJobs(enabled, whitelist, combinedBlacklist, effect, highlightCriteria);
     });
 }
 

@@ -8,9 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewedFilter = document.getElementById("viewedFilter");
     const savedFilter = document.getElementById("savedFilter");
     const promotedFilter = document.getElementById("promotedFilter");
+    const earlyApplicantFilter = document.getElementById("earlyApplicantHighlight");
+    const hasConnectionsFilter = document.getElementById("hasConnectionsHighlight");
+    const earlyReviewFilter = document.getElementById("earlyReviewTimeHighlight");
 
     // Load saved whitelist and blacklist from storage
-    chrome.storage.sync.get(["enabled", "whitelist", "blacklistKeywords", "blacklistCompanies", "effect", "quickFilters"], (data) => {
+    chrome.storage.sync.get(["enabled", "whitelist", "blacklistKeywords", "blacklistCompanies", "effect", "quickFilters", "highlightCriteria"], (data) => {
         extensionEnabledCheck.checked = data.enabled !== false; // Default to enabled if not set
         whitelistInput.value = data.whitelist ? data.whitelist.join(", ") : "";
         blacklistKeywordsInput.value = data.blacklistKeywords ? data.blacklistKeywords.join(", ") : "";
@@ -22,6 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
         viewedFilter.checked = quickFilters.includes("Viewed");
         savedFilter.checked = quickFilters.includes("Saved");
         promotedFilter.checked = quickFilters.includes("Promoted");
+
+        // Set highlight checkboxes
+        const highlightCriteria = data.highlightCriteria || [];
+        earlyApplicantFilter.checked = highlightCriteria.includes("EarlyApplicant");
+        hasConnectionsFilter.checked = highlightCriteria.includes("HasConnections");
+        earlyReviewFilter.checked = highlightCriteria.includes("EarlyReviewTime");
         
         // Set the saved radio button for effect
         if (data.effect) {
@@ -38,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to enable or disable controls based on extension state
     function toggleControls(enabled) {
         const controls = document.querySelectorAll(
-            "#whitelist, #blacklistKeywords, #blacklistCompanies, input[name='effect'], #appliedFilter, #viewedFilter, #savedFilter, #promotedFilter"
+            "#whitelist, #blacklistKeywords, #blacklistCompanies, input[name='effect'], #appliedFilter, #viewedFilter, #savedFilter, #promotedFilter, #earlyApplicantHighlight, #hasConnectionsHighlight, #earlyReviewTimeHighlight"
         );
         controls.forEach(control => control.disabled = !enabled);
     }
@@ -57,7 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedFilter.checked) quickFilters.push("Saved");
         if (promotedFilter.checked) quickFilters.push("Promoted");
 
-        chrome.storage.sync.set({ enabled, whitelist, blacklistKeywords, blacklistCompanies, effect, quickFilters }, () => {
+        const highlightCriteria = [];
+        if (earlyApplicantFilter.checked) highlightCriteria.push("EarlyApplicant");
+        if (hasConnectionsFilter.checked) highlightCriteria.push("HasConnections");
+        if (earlyReviewFilter.checked) highlightCriteria.push("EarlyReviewTime");    
+
+        chrome.storage.sync.set({ enabled, whitelist, blacklistKeywords, blacklistCompanies, effect, quickFilters, highlightCriteria }, () => {
             // Send message to the active tab to apply filter
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
