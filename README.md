@@ -8,5 +8,18 @@ Just clone the repo and follow the installation instructions here: https://devel
 ![Demo of Extension](images/LinkedInGC.gif)
 
 ## Features
-- Filter based on keywords and company names
-- Highlight important job attributes
+💡 Ability to disable the extension 
+
+🆗 Whitelist keywords
+
+🛑🔤 Blacklist keywords. You can discard DevOps jobs, for instance
+
+🛑🏭 Blacklist companies. Get rid of that company that ghosts you
+
+💾 Remove the already applied, viewed or saved jobs
+
+🔇 Remove the promoted ones too (it is amazing the amount of this kind)
+
+✨ Ultra focus mode where you can not only set a transparent setting for the unwanted ones, you can make them disappear
+
+⌚ Highlight jobs that are not crowded yet, you are connected to an employee or when the company reviews the applications early
