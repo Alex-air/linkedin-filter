@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const whitelistInput = document.getElementById('whitelist');
-    const blacklistInput = document.getElementById('blacklist');
+    const blacklistKeywordsInput = document.getElementById('blacklistKeywords');
+    const blacklistCompaniesInput = document.getElementById('blacklistCompanies');
     const saveButton = document.getElementById('saveButton');
     const appliedFilter = document.getElementById("appliedFilter");
     const viewedFilter = document.getElementById("viewedFilter");
@@ -8,9 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const promotedFilter = document.getElementById("promotedFilter");
 
     // Load saved whitelist and blacklist from storage
-    chrome.storage.sync.get(["whitelist", "blacklist", "effect"], (data) => {
+    chrome.storage.sync.get(["whitelist", "blacklistKeywords", "blacklistCompanies", "effect", "quickFilters"], (data) => {
         whitelistInput.value = data.whitelist ? data.whitelist.join(", ") : "";
-        blacklistInput.value = data.blacklist ? data.blacklist.join(", ") : "";
+        blacklistKeywordsInput.value = data.blacklistKeywords ? data.blacklistKeywords.join(", ") : "";
+        blacklistCompaniesInput.value = data.blacklistCompanies ? data.blacklistCompanies.join(", ") : "";
 
         // Init the filters
         const quickFilters = data.quickFilters || [];
@@ -31,7 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Save and apply the whitelist and blacklist when the save button is clicked
     saveButton.addEventListener('click', () => {
         const whitelist = whitelistInput.value.split(",").map(item => item.trim());
-        const blacklist = blacklistInput.value.split(",").map(item => item.trim());
+        const blacklistKeywords = blacklistKeywordsInput.value.split(",").map(item => item.trim());
+        const blacklistCompanies  = blacklistCompaniesInput.value.split(",").map(item => item.trim());
         const effect = document.querySelector('input[name="effect"]:checked').value;
 
         // Collect selected quick filters
@@ -41,10 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedFilter.checked) quickFilters.push("Saved");
         if (promotedFilter.checked) quickFilters.push("Promoted");
 
-        chrome.storage.sync.set({ whitelist, blacklist, effect, quickFilters }, () => {
+        chrome.storage.sync.set({ whitelist, blacklistKeywords, blacklistCompanies, effect, quickFilters }, () => {
             // Send message to the active tab to apply filter
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                
+
             // Check if we are in a LinkedIn page. Not checking it raises an error
             const url = tabs[0].url || "";
             if (url.includes("https://www.linkedin.com/jobs/")) 

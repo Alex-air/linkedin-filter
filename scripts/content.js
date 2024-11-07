@@ -1,13 +1,11 @@
-//const whitelist = ["Barcelona", "Catalonia", "Remote"];  // Add any other terms to whitelist
-//const blacklist = ["Viewed", "Applied", "Saved", "Agoda", "myGwork", "Crossover", "Canonical", "RISK", "Revolut", "Growth", "Playrix", "Semrush"];    // Add any other terms to blacklist
-
 // Function to apply transparency to all job items except the selected one
 function applyEffectToJobs(whitelist, blacklist, effect) {
     const jobItems = document.querySelectorAll('div[data-job-id]:not(.jobs-search-results-list__list-item--active)');
 
     jobItems.forEach(jobItem => {
         // TODO: Add a counter to show the saved jobs, and the total ones
-
+        // It is better not to do it, since LinkedIn renders many more out of the visible area.
+        // The number could be misleading
         if (!meetsCriteria(jobItem, whitelist, blacklist))
         {
             if (effect === 'transparent')
@@ -47,14 +45,15 @@ function meetsCriteria(jobItem, whitelist, blacklist) {
 
 // Load whitelist and blacklist from Chrome storage, then apply effect
 function applyJobFilter() {
-    chrome.storage.sync.get(['whitelist', 'blacklist', 'effect', 'quickFilters'], (data) => {
+    chrome.storage.sync.get(['whitelist', 'blacklistKeywords', 'blacklistCompanies', 'effect', 'quickFilters'], (data) => {
         const whitelist = data.whitelist || [];
-        const blacklist = data.blacklist || [];
+        const blacklistKeywords = data.blacklistKeywords || [];
+        const blacklistCompanies = data.blacklistCompanies || [];
         const quickFilters = data.quickFilters || [];
         const effect = data.effect || "transparent"; // Default to "transparent" if not set
 
-        // Combine blacklist and quickFilters for filtering
-        const combinedBlacklist = [...new Set([...blacklist, ...quickFilters])];
+        // Combine blacklistKeywords, blacklistCompanies and quickFilters for filtering
+        const combinedBlacklist = [...new Set([...blacklistKeywords, ...blacklistCompanies, ...quickFilters])];
 
         // Observe changes in the DOM and apply the transparency
         const observer = new MutationObserver(() => applyEffectToJobs(whitelist, combinedBlacklist, effect));
