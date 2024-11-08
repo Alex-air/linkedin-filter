@@ -78,9 +78,15 @@ document.addEventListener('DOMContentLoaded', () => {
             // Check if we are in a LinkedIn page. Not checking it raises an error
             const url = tabs[0].url || "";
             if (url.includes("https://www.linkedin.com/jobs/")) 
-                chrome.tabs.sendMessage(tabs[0].id, { action: "applyFilter" });
+                chrome.tabs.sendMessage(tabs[0].id, { action: "applyFilter" }, () => {
+                    // Close the popup after sending the message
+                    window.close();
+                });
             else
+            {
                 console.log("Not on a LinkedIn job page. No message sent to content script.");
+                window.close();
+            }
             });
         });
     });
