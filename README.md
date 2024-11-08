@@ -23,3 +23,6 @@ Just clone the repo and follow the installation instructions here: https://devel
 ✨ Ultra focus mode where you can not only set a transparent setting for the unwanted ones, you can make them disappear
 
 ⌚ Highlight jobs that are not crowded yet, you are connected to an employee or when the company reviews the applications early
+
+## License
+This project is licensed under the [MIT License](LICENSE).
