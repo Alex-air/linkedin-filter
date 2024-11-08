@@ -11,9 +11,6 @@
     "action": {
         "default_popup": "popup/popup.html"
     },
-    "background": {
-        "service_worker": "scripts/background.js"
-    },
     "content_scripts": [
       {
         "js": ["scripts/content.js"],
