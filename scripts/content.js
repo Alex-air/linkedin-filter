@@ -44,7 +44,8 @@ function meetsCriteria(jobItem, whitelist, blacklist) {
     const content = jobItem.textContent || "";
 
     // Check if any whitelisted term is present
-    const isWhitelisted = whitelist.some(term => content.includes(term));
+    // If whitelist is empty, consider it as "all pass"
+    const isWhitelisted = whitelist.length === 0 || whitelist.some(term => content.includes(term));
     
     // Check if any blacklisted term is present
     const isBlacklisted = blacklist.some(term => content.includes(term));
@@ -76,7 +77,7 @@ function applyJobFilter() {
         const effect = data.effect || "transparent"; // Default to "transparent" if not set
 
         // Combine blacklistKeywords, blacklistCompanies and quickFilters for filtering
-        const combinedBlacklist = [...new Set([...blacklistKeywords, ...blacklistCompanies, ...quickFilters])];
+        const combinedBlacklist = [...new Set([...blacklistKeywords, ...blacklistCompanies, ...quickFilters])].filter(Boolean);
 
         // Observe changes in the DOM and apply the transparency
         const observer = new MutationObserver(() => applyEffectToJobs(enabled, whitelist, combinedBlacklist, effect, highlightCriteria));

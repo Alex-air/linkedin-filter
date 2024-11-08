@@ -54,9 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Save and apply the whitelist and blacklist when the save button is clicked
     saveButton.addEventListener('click', () => {
         const enabled = extensionEnabledCheck.checked;
-        const whitelist = whitelistInput.value.split(",").map(item => item.trim());
-        const blacklistKeywords = blacklistKeywordsInput.value.split(",").map(item => item.trim());
-        const blacklistCompanies  = blacklistCompaniesInput.value.split(",").map(item => item.trim());
+        const whitelist = whitelistInput.value.split(",").map(item => item.trim()).filter(Boolean);
+        const blacklistKeywords = blacklistKeywordsInput.value.split(",").map(item => item.trim()).filter(Boolean);
+        const blacklistCompanies  = blacklistCompaniesInput.value.split(",").map(item => item.trim()).filter(Boolean);
         const effect = document.querySelector('input[name="effect"]:checked').value;
 
         // Collect selected quick filters
