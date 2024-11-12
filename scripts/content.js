@@ -32,11 +32,7 @@ function applyEffectToJobs(enabled, whitelist, blacklist, effect, highlightCrite
         // If the extension is not enabled, just print as default
         if (!enabled)
         {
-            jobItem.style.opacity = '1'; // Restore the opacity
-            jobItem.style.height = ""; // Reset height to original
-            jobItem.style.overflow = ""; // Reset overflow to original
-            jobItem.style.backgroundColor = "";
-            
+            resetJobStyle(jobItem);
             return;
         }
 
@@ -55,10 +51,21 @@ function applyEffectToJobs(enabled, whitelist, blacklist, effect, highlightCrite
                 jobItem.style.overflow = "hidden"; // Hide any overflow content
             }
         }
+        else
+        {
+            resetJobStyle(jobItem);
 
-        // Apply highlighting if criteria are met
-        jobItem.style.backgroundColor = shouldHighlight(jobItem, highlightCriteria) ? "rgba(255, 255, 0, 0.2)" : "";
+            // Apply highlighting if criteria are met
+            jobItem.style.backgroundColor = shouldHighlight(jobItem, highlightCriteria) ? "rgba(255, 255, 0, 0.2)" : "";
+        }
     });
+}
+
+function resetJobStyle(jobItem) {
+    jobItem.style.opacity = '1'; // Restore the opacity
+    jobItem.style.height = ""; // Reset height to original
+    jobItem.style.overflow = ""; // Reset overflow to original
+    jobItem.style.backgroundColor = "";
 }
 
 // Define your criteria function (modify as needed)
